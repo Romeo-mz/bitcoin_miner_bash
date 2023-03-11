@@ -9,6 +9,12 @@ version="21a2a000"
 
 group=$nonce$difficulty$date$merkel$hash$version
 
-inverted=$(echo $group | fold -b2 | tac | tr -d "\n")
+inverted=$(echo $group | fold -b2 | tac | tr -d "\n") #to invert group 0123 -> 2301
 
-echo $inverted
+binary=$(echo $inverted | xxd -r -p)
+
+hash_final=$(echo -n $binary | openssl dgst -sha256 -binary | openssl dgst -sha256)
+
+hash_hex=$(echo -n $hash_final | xxd -p)
+
+echo $hash_hex
